@@ -43,13 +43,29 @@ motor4 = self.setpoint_throttle + self.out_roll + self.out_pitch + self.out_yaw
 ```
 In total 2 PID algorithms were applied to control the flight of the drone. The diagram of the cascaded control system is shown below,
 <p align="center">
-![task1](https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/Images/Cascaded%20Control%20System.png)<br>
+<img src="https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/Images/Cascaded%20Control%20System.png">
 </p>
-The path of the drone was hardcoded for this task. The final video of task 1 is shown below,
+
+The path of the drone was hardcoded for this task giving it 3 coordinates to reach the destination. The final video of task 1 is shown below,<br>
 
 ![Task1](https://user-images.githubusercontent.com/60431758/112194024-7983d800-8c2e-11eb-95e3-cb833fc3441a.gif)<br>
 
+# TASK 2
+## Problem Statement
+The aim of this task is to pick a parcel and deliver it to its destination<br>
+The Task 2 is divided into 3 sub tasks<br>
+- Task 2A - Scanning the QR code and finding out the destination GPS co-ordinates.
+- Task 2B - Pick/Drop the parcel box
+- Task 2C - Avoiding dynamic obstacles and planing the path
 
+## SCANNING THE QR
+The QR Code is found using pyzbar module of python. The data received is sent to position controller through a publisher. There is a minimum height at which camera can detect the QR code correctly.
+
+## PICK/DROP THE PARCEL BOX
+The box can be picked/dropped using the a rosservice named '/edrone/activate_gripper'. For picking the box, eDrone has to land exactly on top of the box on the centre and then the gripper is activated.
+
+## AVOIDING DYNAMIC OBSTACLES
+Unlike the previous task the path of the drone can be hardcoded only until it picks the box. After that drone has to detect and avoid obstacles on its own. Obstacles can be detected using four distance sensors loaded on four sides of the drone. After that some dynamically calculated setpoints are given to drone to avoid the obstacle.
 
 
 
