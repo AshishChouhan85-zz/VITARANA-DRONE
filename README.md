@@ -121,8 +121,8 @@ self.rc_pub.publish(self.drone_orientation)
 ```
 ## Attitude Controller
 The main task of attitude controller is to keep the drone in the required orientation which is given by position controller. This is done by another PID controlled algorithm which finally calculates the required PWM values. The code implementation is shown below,
-```
 
+```
 now=time.time() # Number of seconds passed since epoch
 
               
@@ -192,5 +192,55 @@ if(elapsed_time>=0.05):
 
     self.lastTime=now
 ```
+After calculating the required PID values throttle is given to each motor of the drone so that if flies in the required orientation.
+<b>NOTE: The signs infront of pitch,roll and yaw is given according to the structure of the drone,these may vary from one drone to other.</b>
+Thsese values are then converted to required PWM format that could be given to motors.
+
+```python
+# Giving throttle to each motor in 1000-2000 format
+
+motor1 = self.setpoint_throttle + self.out_roll - self.out_pitch - self.out_yaw
+motor2 = self.setpoint_throttle - self.out_roll - self.out_pitch + self.out_yaw
+motor3 = self.setpoint_throttle - self.out_roll + self.out_pitch - self.out_yaw
+motor4 = self.setpoint_throttle + self.out_roll + self.out_pitch + self.out_yaw
             
- 
+# Converting the range of 1000-2000 to 0-1024 for pwm format
+        
+self.pwm_cmd.prop1 = 1.024*motor1 - 1024
+self.pwm_cmd.prop2 = 1.024*motor2 - 1024
+self.pwm_cmd.prop3 = 1.024*motor3 - 1024
+self.pwm_cmd.prop4 = 1.024*motor4 - 1024
+
+# Bounding the values of pwm between 0 and 1024
+    
+if(self.pwm_cmd.prop1>1024):
+    self.pwm_cmd.prop1=1024
+elif(self.pwm_cmd.prop1<0):
+    self.pwm_cmd.prop1=0
+else:
+    self.pwm_cmd.prop1=self.pwm_cmd.prop1
+
+if(self.pwm_cmd.prop2>1024):
+    self.pwm_cmd.prop2=1024
+elif(self.pwm_cmd.prop2<0):
+    self.pwm_cmd.prop2=0
+else:
+    self.pwm_cmd.prop2=self.pwm_cmd.prop2
+
+if(self.pwm_cmd.prop3>1024):
+    self.pwm_cmd.prop3=1024
+elif(self.pwm_cmd.prop3<0):
+    self.pwm_cmd.prop3=0
+else:
+    self.pwm_cmd.prop3=self.pwm_cmd.prop3
+
+if(self.pwm_cmd.prop4>1024):
+    self.pwm_cmd.prop4=1024
+elif(self.pwm_cmd.prop4<0):
+    self.pwm_cmd.prop4=0
+else:
+    self.pwm_cmd.prop4=self.pwm_cmd.prop4
+
+# Publishing the propellers pwm
+self.pwm_pub.publish(self.pwm_cmd)
+```
