@@ -75,6 +75,6 @@ Unlike the previous task the path of the drone can be hardcoded only until it pi
 ## Problem Statement
 The aim of this task is to detect the landing markers present in the general vicinity of a given GPS coordinate. The GPS coordinate of the landing marker will NOT be given, instead the coordinate will point somewhere around the marker. You have to hover at certain height from the given coordinates and scan for the landing marker by applying image processing techniques and design an algorithm to take the eDrone above the landing marker and eventually land on it.
 
-![ezgif com-gif-maker (2)](https://user-images.githubusercontent.com/60431758/112216141-2cf8c680-8c47-11eb-9bf6-5ca8267cd80d.gif)
+
 
 
