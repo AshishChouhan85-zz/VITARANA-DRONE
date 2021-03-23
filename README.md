@@ -26,7 +26,8 @@ Task 1B - Designing position controller for the eDrone
 ## Position Controller
 The main task of position controller is to give the required drone orientation to reach to the required setpoint. The orientation is given in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly. The required orientation is calculated using a PID controlled algorithm as shown below,
 '''
- now=time.time() # Getting the current error
+
+        now=time.time() # Getting the current error
 
         
 
