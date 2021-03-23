@@ -13,7 +13,7 @@ The competition consists of series of tasks, the final problem statement for the
 The objective of the task is to move the turtle inside the turtlesim window in a circle and stop at its initial location.
 Teams are supposed to do this by creating a nodes name, /node_turtle_revolve within a python script, node_turtle_revolve.py.<br>
 
-![task0](https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/scripts/Task_0_VD_0614/VD_0614.png)<br>
+![task0](https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/vitarana_drone/scripts/Task_0_VD_0614/VD_0614.png)<br>
 This task was given to make us familiar with ROS and its basics.<br>
 
 # TASK 1
@@ -24,177 +24,13 @@ The Task 1 is divided into 2 sub tasks<br>
 - Task 1B - Designing position controller for the eDrone<br>
 
 ## Position Controller
-The main task of position controller is to give the required drone orientation to reach to the required setpoint. The required orientation is calculated using a PID controlled algorithm as shown below,<br>
-
-```python
-
-now=time.time() # Getting the current error
-elapsed_time=now - self.lastTime # Time elapsed 
+The main task of position controller is to give the required drone orientation to reach to the required setpoint. The required orientation is calculated using a PID controlled algorithm.The orientation is published in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly.
 
 
-      
-if(elapsed_time>=0.001): # Sample time
-            
 
-    if(index_no!=len(self.setpoints)):
-        # Calculating error in orientation
-                
-        self.current_error[0] = self.setpoints[index_no][0] - self.current_coord[0]
-        self.current_error[1] = self.setpoints[index_no][1] - self.current_coord[1]
-        self.current_error[2] = self.setpoints[index_no][2] - self.current_coord[2]
-                          
-        # PID equations for lattitude 
-              
-        self.P[0]=self.Kp[0]*self.current_error[0]
-        self.I[0]=self.I[0] + self.Ki[0]*self.current_error[0]*elapsed_time
-        self.D[0]=self.Kd[0]*(self.current_error[0]-self.previous_error[0])/elapsed_time
-            
-        self.out_lat=self.P[0] + self.I[0] + self.D[0]
-
-        # PID equations for longitude 
-              
-        self.P[1]=self.Kp[1]*self.current_error[1]
-        self.I[1]=self.I[1] + self.Ki[1]*self.current_error[1]*elapsed_time
-        self.D[1]=self.Kd[1]*(self.current_error[1]-self.previous_error[1])/elapsed_time
-            
-        self.out_long=self.P[1] + self.I[1] + self.D[1]
-
-        # PID equations for altitude 
-              
-        self.P[2]=self.Kp[2]*self.current_error[2]
-        self.I[2]=self.I[2] + self.Ki[2]*self.current_error[2]*elapsed_time
-        self.D[2]=self.Kd[2]*(self.current_error[2]-self.previous_error[2])/elapsed_time
-            
-        self.out_alt=self.P[2] + self.I[2] + self.D[2]
-
-        # Saving current error as previous error
-            
-        self.previous_error[0]=self.current_error[0]  
-        self.previous_error[1]=self.current_error[1]
-        self.previous_error[2]=self.current_error[2]
-        self.lastTime=now # Updating the value of last time
-
-```
-The orientation is published in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly.
-
-```python
- # Giving required orientation values 
-                                
- self.drone_orientation.rcRoll = 1500 + self.out_long
- self.drone_orientation.rcPitch = 1500 + self.out_lat
- self.drone_orientation.rcYaw = 1500
- self.drone_orientation.rcThrottle = 1500 +self.out_alt
-
-# Bounding the values of required orientation between 1000 and 2000
-
-if(self.drone_orientation.rcThrottle>2000):
-    self.drone_orientation.rcThrottle=2000
-elif(self.drone_orientation.rcThrottle<1000):
-    self.drone_orientation.rcThrottle=1000
-else:
-    self.drone_orientation.rcThrottle=self.drone_orientation.rcThrottle
-
-if(self.drone_orientation.rcRoll>2000):
-    self.drone_orientation.rcRoll=2000
-elif(self.drone_orientation.rcRoll<1000):
-    self.drone_orientation.rcRoll=1000
-else:
-    self.drone_orientation.rcRoll=self.drone_orientation.rcRoll
-
-if(self.drone_orientation.rcPitch>2000):
-    self.drone_orientation.rcPitch=2000
-elif(self.drone_orientation.rcPitch<1000):
-    self.drone_orientation.rcPitch=1000
-else:
-    self.drone_orientation.rcPitch=self.drone_orientation.rcPitch
-
-if(self.drone_orientation.rcYaw>2000):
-    self.drone_orientation.rcYaw=2000
-elif(self.drone_orientation.rcYaw<1000):
-    self.drone_orientation.rcYaw=1000
-else:
-    self.drone_orientation.rcYaw=self.drone_orientation.rcYaw
-
-# Publishing the orientations
-self.rc_pub.publish(self.drone_orientation)
-
-```
 ## Attitude Controller
-The main task of attitude controller is to keep the drone in the required orientation which is given by position controller. This is done by another PID controlled algorithm which finally calculates the required PWM values. The code implementation is shown below,
-
-```
-now=time.time() # Number of seconds passed since epoch
-
-              
-# Converting drone current orientation from quaternion to euler angles
- (self.drone_orientation_euler[0], self.drone_orientation_euler[1], self.drone_orientation_euler[2]) = tf.transformations.euler_from_quaternion([self.drone_orientation_quaternion[0],self.drone_orientation_quaternion[1], self.drone_orientation_quaternion[2],self.drone_orientation_quaternion[3]])
-
-# Converting radians to degrees
-self.drone_orientation_euler[0]=math.degrees(self.drone_orientation_euler[0])
-self.drone_orientation_euler[1]=math.degrees(self.drone_orientation_euler[1])
-self.drone_orientation_euler[2]=math.degrees(self.drone_orientation_euler[2])    
-
-# Convertng the range from 1000 to 2000 in the range of -10 degree to 10 degree for roll axis
-self.setpoint_euler[0] = self.setpoint_cmd[0] * 0.02 - 30
-self.setpoint_euler[1] = self.setpoint_cmd[1] * 0.02 - 30
-self.setpoint_euler[2] = self.setpoint_cmd[2] * 0.02 - 30
- 
-elapsed_time=now-self.lastTime # Time elapsed since pid function has been called
-
-if(elapsed_time>=0.05):
-
-    # Calculating error in orientation
-    self.current_error[0] = self.setpoint_euler[0] - self.drone_orientation_euler[0]
-    self.current_error[1] = self.setpoint_euler[1] - self.drone_orientation_euler[1]
-    self.current_error[2] = self.setpoint_euler[2] - self.drone_orientation_euler[2]
-
-    # Storing the current error which will be published later 
-    #self.roll_error.data = self.current_error[0]
-    #self.pitch_error.data = self.current_error[1]
-    #self.yaw_error.data = self.current_error[2]
-
-    # Publishing the error
-    #self.roll_pub.publish(self.roll_error)
-    #self.pitch_pub.publish(self.pitch_error)
-    #self.yaw_pub.publish(self.yaw_error)
-        
-                      
-    # PID equations for roll 
-        
-    self.P[0]=self.Kp[0]*self.current_error[0]
-    self.I[0]=self.I[0] + self.Ki[0]*self.current_error[0]*elapsed_time
-    self.D[0]=self.Kd[0]*(self.current_error[0]-self.previous_error[0])/elapsed_time
-
-    self.out_roll=self.P[0] + self.I[0] + self.D[0]
-            
-            
-    # PID equations for pitch 
-        
-    self.P[1]=self.Kp[1]*self.current_error[1]
-    self.I[1]=self.I[1] + self.Ki[1]*self.current_error[1]*elapsed_time
-    self.D[1]=self.Kd[1]*(self.current_error[1]-self.previous_error[1])/elapsed_time
-
-    self.out_pitch=self.P[1] + self.I[1] + self.D[1]
-   
-    # PID equations for yaw 
-        
-    self.P[2]=self.Kp[2]*self.current_error[2]
-    self.I[2]=self.I[2] + self.Ki[2]*self.current_error[2]*elapsed_time
-    self.D[2]=self.Kd[2]*(self.current_error[2]-self.previous_error[2])/elapsed_time
-
-    self.out_yaw=self.P[2] + self.I[2] + self.D[2]
-
-    # Saving current error as previous error
-
-    self.previous_error[0]=self.current_error[0]
-    self.previous_error[1]=self.current_error[1]
-    self.previous_error[2]=self.current_error[2]
-
-    self.lastTime=now
-```
-After calculating the required PID values throttle is given to each motor of the drone so that if flies in the required orientation.
+The main task of attitude controller is to keep the drone in the required orientation which is given by position controller. This is done by another PID controlled algorithm which finally calculates the required PWM values. After calculating the required PID values throttle is given to each motor of the drone so that if flies in the required orientation.These values are then converted to required PWM format that could be given to motors.<br>
 <b>NOTE: The signs infront of pitch,roll and yaw is given according to the structure of the drone,these may vary from one drone to other.</b>
-Thsese values are then converted to required PWM format that could be given to motors.
 
 ```python
 # Giving throttle to each motor in 1000-2000 format
@@ -203,44 +39,5 @@ motor1 = self.setpoint_throttle + self.out_roll - self.out_pitch - self.out_yaw
 motor2 = self.setpoint_throttle - self.out_roll - self.out_pitch + self.out_yaw
 motor3 = self.setpoint_throttle - self.out_roll + self.out_pitch - self.out_yaw
 motor4 = self.setpoint_throttle + self.out_roll + self.out_pitch + self.out_yaw
-            
-# Converting the range of 1000-2000 to 0-1024 for pwm format
-        
-self.pwm_cmd.prop1 = 1.024*motor1 - 1024
-self.pwm_cmd.prop2 = 1.024*motor2 - 1024
-self.pwm_cmd.prop3 = 1.024*motor3 - 1024
-self.pwm_cmd.prop4 = 1.024*motor4 - 1024
 
-# Bounding the values of pwm between 0 and 1024
-    
-if(self.pwm_cmd.prop1>1024):
-    self.pwm_cmd.prop1=1024
-elif(self.pwm_cmd.prop1<0):
-    self.pwm_cmd.prop1=0
-else:
-    self.pwm_cmd.prop1=self.pwm_cmd.prop1
-
-if(self.pwm_cmd.prop2>1024):
-    self.pwm_cmd.prop2=1024
-elif(self.pwm_cmd.prop2<0):
-    self.pwm_cmd.prop2=0
-else:
-    self.pwm_cmd.prop2=self.pwm_cmd.prop2
-
-if(self.pwm_cmd.prop3>1024):
-    self.pwm_cmd.prop3=1024
-elif(self.pwm_cmd.prop3<0):
-    self.pwm_cmd.prop3=0
-else:
-    self.pwm_cmd.prop3=self.pwm_cmd.prop3
-
-if(self.pwm_cmd.prop4>1024):
-    self.pwm_cmd.prop4=1024
-elif(self.pwm_cmd.prop4<0):
-    self.pwm_cmd.prop4=0
-else:
-    self.pwm_cmd.prop4=self.pwm_cmd.prop4
-
-# Publishing the propellers pwm
-self.pwm_pub.publish(self.pwm_cmd)
 ```
