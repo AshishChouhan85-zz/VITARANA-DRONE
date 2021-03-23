@@ -75,7 +75,7 @@ if(elapsed_time>=0.001): # Sample time
         self.lastTime=now # Updating the value of last time
 
 ```
-The orientation is given in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly.
+The orientation is published in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly.
 
 ```python
  # Giving required orientation values 
@@ -119,7 +119,78 @@ else:
 self.rc_pub.publish(self.drone_orientation)
 
 ```
+## Attitude Controller
+The main task of attitude controller is to keep the drone in the required orientation which is given by position controller. This is done by another PID controlled algorithm which finally calculates the required PWM values. The code implementation is shown below,
+```
 
+now=time.time() # Number of seconds passed since epoch
 
+              
+# Converting drone current orientation from quaternion to euler angles
+ (self.drone_orientation_euler[0], self.drone_orientation_euler[1], self.drone_orientation_euler[2]) = tf.transformations.euler_from_quaternion([self.drone_orientation_quaternion[0],self.drone_orientation_quaternion[1], self.drone_orientation_quaternion[2],self.drone_orientation_quaternion[3]])
+
+# Converting radians to degrees
+self.drone_orientation_euler[0]=math.degrees(self.drone_orientation_euler[0])
+self.drone_orientation_euler[1]=math.degrees(self.drone_orientation_euler[1])
+self.drone_orientation_euler[2]=math.degrees(self.drone_orientation_euler[2])    
+
+# Convertng the range from 1000 to 2000 in the range of -10 degree to 10 degree for roll axis
+self.setpoint_euler[0] = self.setpoint_cmd[0] * 0.02 - 30
+self.setpoint_euler[1] = self.setpoint_cmd[1] * 0.02 - 30
+self.setpoint_euler[2] = self.setpoint_cmd[2] * 0.02 - 30
+ 
+elapsed_time=now-self.lastTime # Time elapsed since pid function has been called
+
+if(elapsed_time>=0.05):
+
+    # Calculating error in orientation
+    self.current_error[0] = self.setpoint_euler[0] - self.drone_orientation_euler[0]
+    self.current_error[1] = self.setpoint_euler[1] - self.drone_orientation_euler[1]
+    self.current_error[2] = self.setpoint_euler[2] - self.drone_orientation_euler[2]
+
+    # Storing the current error which will be published later 
+    #self.roll_error.data = self.current_error[0]
+    #self.pitch_error.data = self.current_error[1]
+    #self.yaw_error.data = self.current_error[2]
+
+    # Publishing the error
+    #self.roll_pub.publish(self.roll_error)
+    #self.pitch_pub.publish(self.pitch_error)
+    #self.yaw_pub.publish(self.yaw_error)
+        
+                      
+    # PID equations for roll 
+        
+    self.P[0]=self.Kp[0]*self.current_error[0]
+    self.I[0]=self.I[0] + self.Ki[0]*self.current_error[0]*elapsed_time
+    self.D[0]=self.Kd[0]*(self.current_error[0]-self.previous_error[0])/elapsed_time
+
+    self.out_roll=self.P[0] + self.I[0] + self.D[0]
+            
+            
+    # PID equations for pitch 
+        
+    self.P[1]=self.Kp[1]*self.current_error[1]
+    self.I[1]=self.I[1] + self.Ki[1]*self.current_error[1]*elapsed_time
+    self.D[1]=self.Kd[1]*(self.current_error[1]-self.previous_error[1])/elapsed_time
+
+    self.out_pitch=self.P[1] + self.I[1] + self.D[1]
+   
+    # PID equations for yaw 
+        
+    self.P[2]=self.Kp[2]*self.current_error[2]
+    self.I[2]=self.I[2] + self.Ki[2]*self.current_error[2]*elapsed_time
+    self.D[2]=self.Kd[2]*(self.current_error[2]-self.previous_error[2])/elapsed_time
+
+    self.out_yaw=self.P[2] + self.I[2] + self.D[2]
+
+    # Saving current error as previous error
+
+    self.previous_error[0]=self.current_error[0]
+    self.previous_error[1]=self.current_error[1]
+    self.previous_error[2]=self.current_error[2]
+
+    self.lastTime=now
+```
             
  
