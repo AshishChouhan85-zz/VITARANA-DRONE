@@ -26,10 +26,12 @@ The Task 1 is divided into 2 sub tasks<br>
 ## Position Controller
 The main task of position controller is to give the required drone orientation to reach to the required setpoint. The orientation is given in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly. The required orientation is calculated using a PID controlled algorithm as shown below,<br>
 
-'''
+'''js
 
-    now=time.time() # Getting the current error
-    elapsed_time=now - self.lastTime # Time elapsed 
+now=time.time() # Getting the current error
+elapsed_time=now - self.lastTime # Time elapsed 
+
+'''
       
     if(elapsed_time>=0.001): # Sample time
             
@@ -119,5 +121,5 @@ The main task of position controller is to give the required drone orientation t
             # Publishing the orientations
             self.rc_pub.publish(self.drone_orientation)
             
-'''               
+            
  
