@@ -6,4 +6,10 @@ These UAVs are a result of improvements in semiconductor and microprocessor tech
 This project works on concepts of <b>control systems, path planning, image processing and algorithm development.</b><br>
 Tools such as the <b>Robot Operating System, robotics simulator Gazebo, the Python programming language</b> and many of its libraries are used.<br>
 
-The competition consists of series of tasks, the final problem statement for the drone is to deliver various packages to their destinations, optimizing for time and quantity.
+The competition consists of series of tasks, the final problem statement for the drone is to deliver various packages to their destinations, optimizing for time and quantity.<br>
+
+# TASK 0
+## Problem Statement
+The objective of the task is to move the turtle inside the turtlesim window in a circle and stop at its initial location.
+
+Teams are supposed to do this by creating a nodes name, /node_turtle_revolve within a python script, node_turtle_revolve.py.
