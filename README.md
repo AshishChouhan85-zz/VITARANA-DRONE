@@ -11,6 +11,6 @@ The competition consists of series of tasks, the final problem statement for the
 # TASK 0
 ## Problem Statement
 The objective of the task is to move the turtle inside the turtlesim window in a circle and stop at its initial location.
-Teams are supposed to do this by creating a nodes name, /node_turtle_revolve within a python script, node_turtle_revolve.py.<br?
+Teams are supposed to do this by creating a nodes name, /node_turtle_revolve within a python script, node_turtle_revolve.py.<br>
 
 ![task0](https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/scripts/Task_0_VD_0614/VD_0614.png)<br>
