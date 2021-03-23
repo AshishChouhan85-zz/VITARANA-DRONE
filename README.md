@@ -45,7 +45,10 @@ In total 2 PID algorithms were applied to control the flight of the drone. The d
 
 ![task1](https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/Images/Cascaded%20Control%20System.png)<br>
 
-https://user-images.githubusercontent.com/60431758/112156669-7841b380-8c0c-11eb-8b24-ce71f7dbdb89.mp4
+
+https://user-images.githubusercontent.com/60431758/112157845-9cea5b00-8c0d-11eb-8491-7ab63ef4f3a1.mp4
+
+
 
 
 
