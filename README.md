@@ -20,13 +20,13 @@ This task was given to make us familiar with ROS and its basics.<br>
 ## Problem Statement
 The aim of this task is to design controllers which will control the eDrone's orientation as well as position in Gazebo environment.<br>
 The Task 1 is divided into 2 sub tasks<br>
-Task 1A - Designing attitude controller for the eDrone<br>
-Task 1B - Designing position controller for the eDrone<br>
+-Task 1A - Designing attitude controller for the eDrone<br>
+-Task 1B - Designing position controller for the eDrone<br>
 
 ## Position Controller
 The main task of position controller is to give the required drone orientation to reach to the required setpoint. The orientation is given in quaternion format which ranges from 1000 to 2000. 1000 corresponds to -10 degrees and 2000 corresponds to 10 degress and all the angles between -10 and 10 degrees can be found accordingly. The required orientation is calculated using a PID controlled algorithm as shown below,<br>
 
-'''
+'''python
 
         now=time.time() # Getting the current error
 
@@ -123,5 +123,5 @@ The main task of position controller is to give the required drone orientation t
 
                 # Publishing the orientations
                 self.rc_pub.publish(self.drone_orientation)
-'''python                
+'''               
  
