@@ -64,12 +64,12 @@ The QR Code is found using pyzbar module of python. The data received is sent to
 ## PICK/DROP THE PARCEL BOX
 The box can be picked/dropped using the a rosservice named '/edrone/activate_gripper'. For picking the box, eDrone has to land exactly on top of the box on the centre and then the gripper is activated.
 
-![ezgif com-gif-maker](https://user-images.githubusercontent.com/60431758/112212890-8a8b1400-8c43-11eb-9e16-d83a644e5783.gif)<br>
+![ezgif com-gif-maker (5)](https://user-images.githubusercontent.com/60431758/112269429-5e50b100-8c9e-11eb-87e1-e4b40600aa2a.gif)
 
 ## AVOIDING DYNAMIC OBSTACLES
 Unlike the previous task the path of the drone can be hardcoded only until it picks the box. After that drone has to detect and avoid obstacles on its own. Obstacles can be detected using four distance sensors loaded on four sides of the drone. After that some dynamically calculated setpoints are given to drone to avoid the obstacle. As the map of area is not given beforehand path planning algorithms like Dijkstra's algorithm cannot be used. Here we have used bug algorithm that does not require any map of the area it is about to enter.
 
-![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/60431758/112214170-e86c2b80-8c44-11eb-96d4-06a73561ccaf.gif)
+![ezgif com-gif-maker (6)](https://user-images.githubusercontent.com/60431758/112269464-690b4600-8c9e-11eb-9037-5a340d751bb4.gif)
 
 # TASK 3
 ## Problem Statement
