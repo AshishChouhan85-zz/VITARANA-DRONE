@@ -59,7 +59,7 @@ The Task 2 is divided into 3 sub tasks<br>
 - Task 2C - Avoiding dynamic obstacles and planing the path
 
 ## SCANNING THE QR
-The QR Code is found using pyzbar module of python. The data received is sent to position controller through a publisher. There is a minimum height at which camera can detect the QR code correctly.
+The QR Code is found using pyzbar module of python. The data received is the gps coordinates of the final location and is sent to position controller through a publisher. There is a minimum height at which camera can detect the QR code correctly.
 
 ## PICK/DROP THE PARCEL BOX
 The box can be picked/dropped using the a rosservice named ```/edrone/activate_gripper```. For picking the box, eDrone has to land exactly on top of the box on the centre and then the gripper is activated.
