@@ -42,9 +42,9 @@ motor4 = self.setpoint_throttle + self.out_roll + self.out_pitch + self.out_yaw
 
 ```
 In total 2 PID algorithms were applied to control the flight of the drone. The diagram of the cascaded control system is shown below,
-<p align="center">
-<img src="https://github.com/AshishChouhan85/VITARANA-DRONE/blob/main/Images/Cascaded%20Control%20System.png">
-</p>
+<br>
+![Cascaded Control System](https://user-images.githubusercontent.com/60431758/121469207-b5327080-c9d9-11eb-812b-1308918b8410.png)
+
 
 The path of the drone was hardcoded for this task giving it 3 coordinates to reach the destination. The final video of task 1 is shown below,<br>
 
